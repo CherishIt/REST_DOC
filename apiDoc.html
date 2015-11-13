@@ -1,0 +1,1527 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/navcss.css">
+    <link rel="stylesheet" type="text/css" href="css/mycss.css">
+    <title>ECS Library REST API Doc</title>
+</head>
+
+<body data-spy="scroll" data-target=".sidebar" data-offset="20">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">ECS Library REST API Document</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid" id="content">
+        <!--Nav Bar -->
+        <div id="navigation" class="col-xs-3">
+            <nav class="sidebar">
+                <h4>API Menu</h4>
+                <ul id="sidebar" class="nav nav-stacked fixed">
+                    <li>
+                        <a href="#About">About</a>
+                    </li>
+                    <li>
+                        <a href="#Publishers">Publishers</a>
+                        <ul class="nav nav-stacked">
+                            <li><a href="#publishers_1">/publishers</a>
+                            </li>
+                            <li><a href="#publishers_2">/publishers/&ltpublisher_id&gt</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#Authors">Authors</a>
+                        <ul class="nav nav-stacked">
+                            <li><a href="#authors_1">/authors</a>
+                            </li>
+                            <li><a href="#authors_2">/authors/&ltauthor_id&gt</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#Books">Books</a>
+                        <ul class="nav nav-stacked">
+                            <li><a href="#books_1">/books</a>
+                            </li>
+                            <li><a href="#books_2">/books/&ltbook_id&gt</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!--Main Content -->
+        <div class="col-xs-9">
+            <section id="About" class="row">
+                <hr>
+                <h2>About</h2>           
+                <div class="col-xs-5 no-padding-top">
+                    <h4>This is the REST API Document of ECS Library.</h4>
+                    <p>For each API, you can use
+                        <span class="label label-info">HEAD</span> to get the header of the response only.
+                    </p>
+                    <p>For each API, you can use
+                        <span class="label label-info">OPTIONS</span> to get all supported HTTP Methods in the <code>response header</code> and information about this API in the <code>response body</code>(A sample response to "/authors" is shown on the right).
+                    </p>
+                    <p>HTTP methods
+                        <span class="label label-info">HEAD</span> and
+                        <span class="label label-info">OPTIONS</span>
+                        <strong>WON'T</strong> be documented specifically in each API.
+                    </p>
+                </div>
+                <div class="col-xs-7 no-padding-top">
+                    <h4>OPTIONS Response Sample</h4>
+                    <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;name&gt;Author List&lt;/name&gt;
+    &lt;description&gt;&lt;/description&gt;
+    &lt;renders&gt;
+        &lt;list-item&gt;application/xml&lt;/list-item&gt;
+        &lt;list-item&gt;application/json&lt;/list-item&gt;
+        &lt;list-item&gt;text/csv&lt;/list-item&gt;
+    &lt;/renders&gt;
+    &lt;parses&gt;
+        &lt;list-item&gt;application/xml&lt;/list-item&gt;
+        &lt;list-item&gt;application/json&lt;/list-item&gt;
+        &lt;list-item&gt;text/csv&lt;/list-item&gt;
+    &lt;/parses&gt;
+    &lt;actions&gt;
+        &lt;POST&gt;
+            &lt;url&gt;
+                &lt;type&gt;field&lt;/type&gt;
+                &lt;required&gt;False&lt;/required&gt;
+                &lt;read_only&gt;True&lt;/read_only&gt;
+                &lt;label&gt;Url&lt;/label&gt;
+            &lt;/url&gt;
+            &lt;name&gt;
+                &lt;type&gt;string&lt;/type&gt;
+                &lt;required&gt;True&lt;/required&gt;
+                &lt;read_only&gt;False&lt;/read_only&gt;
+                &lt;label&gt;Name&lt;/label&gt;
+                &lt;max_length&gt;255&lt;/max_length&gt;
+            &lt;/name&gt;
+            &lt;owner&gt;
+                &lt;type&gt;field&lt;/type&gt;
+                &lt;required&gt;False&lt;/required&gt;
+                &lt;read_only&gt;True&lt;/read_only&gt;
+                &lt;label&gt;Owner&lt;/label&gt;
+            &lt;/owner&gt;
+        &lt;/POST&gt;
+    &lt;/actions&gt;
+&lt;/root&gt;
+                </pre>
+                </div>
+            </section>
+            <section id="Publishers" class="row">
+                <hr>
+                <h2>Publishers</h2>
+                <p>ECS library offers <code>/publishers</code> resource for providing the publishers list or creating a new publisher.</p>
+                <p>Once a new publisher is created, <code>/publishers/&ltpublisher_id&gt</code> can be used to get, update or delete the publisher.</p>
+                <div id="publishers_1">
+                    <hr>
+                    <h3>/publishers</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">POST</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get a list of all publishers</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Simply <span class="label label-info">GET</span> /publishers</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/publishers</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="publisher" class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns a list of all publishers.</p>
+                                <p>Publisher:</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Property</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>url</td>
+                                            <td>Url of the publisher</td>
+                                        </tr>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the publisher</td>
+                                        </tr>
+                                        <tr>
+                                            <td>location</td>
+                                            <td>Location of the publisher</td>
+                                        </tr>
+                                        <tr>
+                                            <td>owner</td>
+                                            <td>Name of user who created the publisher</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/1&lt;/url&gt;
+        &lt;name&gt;O&#39;Reilly Media&lt;/name&gt;
+        &lt;location&gt;Sebastopol, CA&lt;/location&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/2&lt;/url&gt;
+        &lt;name&gt;Visual Editions&lt;/name&gt;
+        &lt;location&gt;London, UK&lt;/location&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/3&lt;/url&gt;
+        &lt;name&gt;New Directions&lt;/name&gt;
+        &lt;location&gt;New York&lt;/location&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="post">
+                        <h4>POST</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">POST</span> on this api to <strong>create a new publisher</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p><span class="label label-info">POST</span> with information about new publisher in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the publisher</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>location</td>
+                                            <td>Location of the publisher</td>
+                                            <td>False</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#form-data_1" data-toggle="tab">Form Data</a></li>
+                                    <li><a href="#xml_1" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_1" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="form-data_1" class="tab-pane active">
+                                       <table class="table table-condensed table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td>name</td>
+                                                    <td>publisher</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>location</td>
+                                                    <td>Southampton</td>
+                                                </tr>
+                                            </tbody>
+                                       </table>
+                                    </div>
+                                    <div id="xml_1" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;name&gt;publisher&lt;/name&gt;
+    &lt;location&gt;Southampton&lt;/location&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_1" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "name": "publisher",
+    "location": "Southampton"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the new publisher.</p>
+                                <a href="#publisher">Publisher Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/193&lt;/url&gt;
+    &lt;name&gt;publisher&lt;/name&gt;
+    &lt;location&gt;Southampton&lt;/location&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="publishers_2">
+                    <hr>
+                    <h3>/publishers/&ltpublisher_id&gt</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">PUT</span>
+                    <span class="label label-info">PATCH</span>
+                    <span class="label label-info">DELETE</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get the detail of a publisher with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the publisher id in the URL of <span class="label label-info">GET</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/publishers/192</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns detail of the publisher with the specific id.</p>
+                                <a href="#publisher">Publisher Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/192&lt;/url&gt;
+    &lt;name&gt;publisher&lt;/name&gt;
+    &lt;location&gt;Southampton&lt;/location&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="put">
+                        <h4>PUT</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PUT</span> on this api to <strong>redefine a publisher's detail information</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the publisher id in the URL of <span class="label label-info">PUT</span> call with all the information about the publisher in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the publisher</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>location</td>
+                                            <td>Location of the publisher</td>
+                                            <td>True</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#xml_2" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_2" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="xml_2" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;name&gt;publisher_redefined&lt;/name&gt;
+    &lt;location&gt;Southampton_redefined&lt;/location&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_2" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "name": "publisher_redefined",
+    "location": "Southampton_redefined"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated publisher.</p>
+                                <a href="#publisher">Publisher Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/193&lt;/url&gt;
+    &lt;name&gt;publisher_redefined&lt;/name&gt;
+    &lt;location&gt;Southampton_redefined&lt;/location&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="patch">
+                        <h4>PATCH</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PATCH</span> on this api to <strong>modify part of a publisher's detail information</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the publisher id in the URL of <span class="label label-info">PATCH</span> call with information about the publisher you want to modify in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the publisher</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>location</td>
+                                            <td>Location of the publisher</td>
+                                            <td>False</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#xml_3" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_3" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="xml_3" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;name&gt;publisher_redefined_patched&lt;/name&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_3" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "name": "publisher_redefined_patched"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated publisher.</p>
+                                <a href="#publisher">Publisher Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/192&lt;/url&gt;
+    &lt;name&gt;publisher_redefined_patched&lt;/name&gt;
+    &lt;location&gt;Southampton_redefined&lt;/location&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="delete">
+                        <h4>DELETE</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">DELETE</span> on this api to <strong>delete a publisher with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the publisher id in the URL of <span class="label label-info">DELETE</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>DELETE http://waisvm-rfp1.ecs.soton.ac.uk/publishers/192</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Return <code>204 NO CONTENT</code> to indicate this publisher no longer exists.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="Authors" class="row">
+                <hr>
+                <h2>Authors</h2>
+                <p>ECS library offers <code>/authors</code> resource for providing the authors list or creating a new author.</p>
+                <p>Once a new author is created, <code>/authors/&ltauthor_id&gt</code> can be used to get, update or delete the author.</p>
+                <div id="authors_1">
+                    <hr>
+                    <h3>/authors</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">POST</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get a list of all authors</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Simply <span class="label label-info">GET</span> /authors</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/authors</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="author" class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns a list of all authors.</p>
+                                <p>Author:</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Property</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>url</td>
+                                            <td>Url of the author</td>
+                                        </tr>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the author</td>
+                                        </tr>
+                                        <tr>
+                                            <td>owner</td>
+                                            <td>Name of user who created the author</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/1&lt;/url&gt;
+        &lt;name&gt;Jim Webber&lt;/name&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/2&lt;/url&gt;
+        &lt;name&gt;Savas Parastatidis&lt;/name&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/3&lt;/url&gt;
+        &lt;name&gt;Ian Robinson&lt;/name&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="post">
+                        <h4>POST</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">POST</span> on this api to <strong>create a new author</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p><span class="label label-info">POST</span> with information about the new author in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the author</td>
+                                            <td>True</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#form-data_4" data-toggle="tab">Form Data</a></li>
+                                    <li><a href="#xml_4" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_4" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="form-data_4" class="tab-pane active">
+                                       <table class="table table-condensed table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td>name</td>
+                                                    <td>author</td>
+                                                </tr>
+                                            </tbody>
+                                       </table>
+                                    </div>
+                                    <div id="xml_4" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;name&gt;author&lt;/name&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_4" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "name": "author"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the new author.</p>
+                                <a href="#author">Author Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/189&lt;/url&gt;
+    &lt;name&gt;author&lt;/name&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="authors_2">
+                    <hr>
+                    <h3>/authors/&ltauthor_id&gt</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">PUT</span>
+                    <span class="label label-info">PATCH</span>
+                    <span class="label label-info">DELETE</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get the detail of a author with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the author id in the URL of <span class="label label-info">GET</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/author/189</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns detail of the author with the specific id.</p>
+                                <a href="#author">Author Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/189&lt;/url&gt;
+    &lt;name&gt;author&lt;/name&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="put">
+                        <h4>PUT</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PUT</span> on this api to <strong>redefine a author's detail information</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the author id in the URL of <span class="label label-info">PUT</span> call with all the information about the author in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the author</td>
+                                            <td>True</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#xml_5" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_5" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="xml_5" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;name&gt;author_redefined&lt;/name&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_5" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "name": "author_redefined"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated author.</p>
+                                <a href="#author">Author Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/189&lt;/url&gt;
+    &lt;name&gt;author_redefined&lt;/name&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="patch">
+                        <h4>PATCH</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PATCH</span> on this api to <strong>modify part of a author's detail information</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the author id in the URL of <span class="label label-info">PATCH</span> call with information about the author you want to modify in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>Name of the author</td>
+                                            <td>False</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#xml_6" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_6" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="xml_6" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;name&gt;author_redefined_patched&lt;/name&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_6" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "name": "author_redefined_patched"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated author.</p>
+                                <a href="#author">Author Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/189&lt;/url&gt;
+    &lt;name&gt;author_redefined_patched&lt;/name&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="delete">
+                        <h4>DELETE</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">DELETE</span> on this api to <strong>delete a author with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the author id in the URL of <span class="label label-info">DELETE</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>DELETE http://waisvm-rfp1.ecs.soton.ac.uk/author/189</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Return <code>204 NO CONTENT</code> to indicate this author no longer exists.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="Books" class="row">
+                <hr>
+                <h2>Books</h2>
+                <p>ECS library offers <code>/books</code> resource for providing the books list or creating a new book.</p>
+                <p>Once a new book is created, <code>/books/&ltbook_id&gt</code> can be used to get, update or delete the book.</p>
+                <div id="books_1">
+                    <hr>
+                    <h3>/books</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">POST</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get a list of all books</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Simply <span class="label label-info">GET</span> /books</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/books</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="book" class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns a list of all books.</p>
+                                <p>Book:</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Property</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>url</td>
+                                            <td>Url of the book</td>
+                                        </tr>
+                                        <tr>
+                                            <td>title</td>
+                                            <td>Title of the book</td>
+                                        </tr>
+                                        <tr>
+                                            <td>pages</td>
+                                            <td>Pages of the book</td>
+                                        </tr>
+                                        <tr>
+                                            <td>isbn13</td>
+                                            <td>Isbn-13 number of the book</td>
+                                        </tr>
+                                        <tr>
+                                            <td>date_published</td>
+                                            <td>Publish date of the book</td>
+                                        </tr>
+                                        <tr>
+                                            <td>authors</td>
+                                            <td>Authors of the book</td>
+                                        </tr>
+                                        <tr>
+                                            <td>publisher</td>
+                                            <td>Publisher of the book</td>
+                                        </tr>
+                                        <tr>
+                                            <td>owner</td>
+                                            <td>Name of user who created the book</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/1&lt;/url&gt;
+        &lt;title&gt;REST in Practice&lt;/title&gt;
+        &lt;pages&gt;448&lt;/pages&gt;
+        &lt;isbn13&gt;9780596805821&lt;/isbn13&gt;
+        &lt;date_published&gt;2010-09-01&lt;/date_published&gt;
+        &lt;authors&gt;
+            &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/1&lt;/list-item&gt;
+            &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/2&lt;/list-item&gt;
+            &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/3&lt;/list-item&gt;
+        &lt;/authors&gt;
+        &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/1&lt;/publisher&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+    &lt;list-item&gt;
+        &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/2&lt;/url&gt;
+        &lt;title&gt;Composition No. 1&lt;/title&gt;
+        &lt;pages&gt;155&lt;/pages&gt;
+        &lt;isbn13&gt;9780956569226&lt;/isbn13&gt;
+        &lt;date_published&gt;2011-08-11&lt;/date_published&gt;
+        &lt;authors&gt;
+            &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/4&lt;/list-item&gt;
+        &lt;/authors&gt;
+        &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/2&lt;/publisher&gt;
+        &lt;owner&gt;rfp1n11&lt;/owner&gt;
+    &lt;/list-item&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="post">
+                        <h4>POST</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">POST</span> on this api to <strong>create a new book</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p><span class="label label-info">POST</span> with information about new book in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>title</td>
+                                            <td>Title of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>pages</td>
+                                            <td>Pages of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>isbn13</td>
+                                            <td>Isbn-13 number of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>date_published</td>
+                                            <td>Publish date of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>authors</td>
+                                            <td>Authors of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>publisher</td>
+                                            <td>Publisher of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#form-data_7" data-toggle="tab">Form Data</a></li>
+                                    <li><a href="#xml_7" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_7" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="form-data_7" class="tab-pane active">
+                                       <table class="table table-condensed table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td>title</td>
+                                                    <td>book_title</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>pages</td>
+                                                    <td>1234</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>isbn13</td>
+                                                    <td>1234567890</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>date_published</td>
+                                                    <td>2014-09-10</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>authors</td>
+                                                    <td>http://waisvm-rfp1.ecs.soton.ac.uk/author/1</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>authors</td>
+                                                    <td>http://waisvm-rfp1.ecs.soton.ac.uk/author/2</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>publisher</td>
+                                                    <td>http://waisvm-rfp1.ecs.soton.ac.uk/publishers/1</td>
+                                                </tr>
+                                            </tbody>
+                                       </table>
+                                    </div>
+                                    <div id="xml_7" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;title&gt;book_title&lt;/title&gt;
+    &lt;pages&gt;1234&lt;/pages&gt;
+    &lt;isbn13&gt;1234567890&lt;/isbn13&gt;
+    &lt;date_published&gt;2014-09-10&lt;/date_published&gt;
+    &lt;authors&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/1&lt;/list-item&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/2&lt;/list-item&gt;
+    &lt;/authors&gt;
+    &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/1&lt;/publisher&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_7" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "title": "book_title",
+    "pages": 1234,
+    "isbn13": "1234567890",
+    "date_published": "2014-09-10",
+    "authors": [
+        "http://waisvm-rfp1.ecs.soton.ac.uk/author/1",
+        "http://waisvm-rfp1.ecs.soton.ac.uk/author/2"
+        ],
+    "publisher": "http://waisvm-rfp1.ecs.soton.ac.uk/publisher/1"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the new book.</p>
+                                <a href="#book">Book Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/260&lt;/url&gt;
+    &lt;title&gt;book_title&lt;/title&gt;
+    &lt;pages&gt;1234&lt;/pages&gt;
+    &lt;isbn13&gt;1234567890&lt;/isbn13&gt;
+    &lt;date_published&gt;2014-09-10&lt;/date_published&gt;
+    &lt;authors&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/1&lt;/list-item&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/2&lt;/list-item&gt;
+    &lt;/authors&gt;
+    &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/1&lt;/publisher&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="books_2">
+                    <hr>
+                    <h3>/books/&ltbook_id&gt</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">PUT</span>
+                    <span class="label label-info">PATCH</span>
+                    <span class="label label-info">DELETE</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get the detail of a book with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the book id in the URL of <span class="label label-info">GET</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/book/260</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns detail of the book with the specific id.</p>
+                                <a href="#book">Book Properties</a>
+                                <table class="table table-condensed table-striped table-hover">
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/260&lt;/url&gt;
+    &lt;title&gt;book_title&lt;/title&gt;
+    &lt;pages&gt;1234&lt;/pages&gt;
+    &lt;isbn13&gt;1234567890&lt;/isbn13&gt;
+    &lt;date_published&gt;2014-09-10&lt;/date_published&gt;
+    &lt;authors&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/1&lt;/list-item&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/2&lt;/list-item&gt;
+    &lt;/authors&gt;
+    &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/1&lt;/publisher&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="put">
+                        <h4>PUT</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PUT</span> on this api to <strong>redefine a book's detail information</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the book id in the URL of <span class="label label-info">PUT</span> call with all the information about the book in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>title</td>
+                                            <td>Title of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>pages</td>
+                                            <td>Pages of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>isbn13</td>
+                                            <td>Isbn-13 number of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>date_published</td>
+                                            <td>Publish date of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>authors</td>
+                                            <td>Authors of the book</td>
+                                            <td>True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>publisher</td>
+                                            <td>Publisher of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#xml_8" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_8" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="xml_8" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;title&gt;book_title_redefined&lt;/title&gt;
+    &lt;pages&gt;-1234&lt;/pages&gt;
+    &lt;isbn13&gt;123456789000&lt;/isbn13&gt;
+    &lt;date_published&gt;2024-09-10&lt;/date_published&gt;
+    &lt;authors&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/3&lt;/list-item&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/4&lt;/list-item&gt;
+    &lt;/authors&gt;
+    &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/2&lt;/publisher&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_8" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "title": "book_title_redefined",
+    "pages": -1234,
+    "isbn13": "123456789000",
+    "date_published": "2024-09-10",
+    "authors": [
+        "http://waisvm-rfp1.ecs.soton.ac.uk/authors/3",
+        "http://waisvm-rfp1.ecs.soton.ac.uk/authors/4"
+        ],
+   "publisher": "http://waisvm-rfp1.ecs.soton.ac.uk/publishers/2"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated book.</p>
+                                <a href="#book">Book Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/260&lt;/url&gt;
+    &lt;title&gt;book_title_redefined&lt;/title&gt;
+    &lt;pages&gt;-1234&lt;/pages&gt;
+    &lt;isbn13&gt;123456789000&lt;/isbn13&gt;
+    &lt;date_published&gt;2024-09-10&lt;/date_published&gt;
+    &lt;authors&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/3&lt;/list-item&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/4&lt;/list-item&gt;
+    &lt;/authors&gt;
+    &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/2&lt;/publisher&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="patch">
+                        <h4>PATCH</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PATCH</span> on this api to <strong>modify part of a book's detail information</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the book id in the URL of <span class="label label-info">PATCH</span> call with information about the book you want to modify in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>title</td>
+                                            <td>Title of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>pages</td>
+                                            <td>Pages of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>isbn13</td>
+                                            <td>Isbn-13 number of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>date_published</td>
+                                            <td>Publish date of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>authors</td>
+                                            <td>Authors of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>publisher</td>
+                                            <td>Publisher of the book</td>
+                                            <td>False</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#xml_9" data-toggle="tab">XML</a></li>
+                                    <li><a href="#json_9" data-toggle="tab">JSON</a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="xml_9" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;title&gt;book_title_redefined_patched&lt;/title&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_9" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "title": "book_title_redefined_patched"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated author.</p>
+                                <a href="#book">Book Properties</a>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/260&lt;/url&gt;
+    &lt;title&gt;book_title_redefined_patched&lt;/title&gt;
+    &lt;pages&gt;-1234&lt;/pages&gt;
+    &lt;isbn13&gt;123456789000&lt;/isbn13&gt;
+    &lt;date_published&gt;2024-09-10&lt;/date_published&gt;
+    &lt;authors&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/3&lt;/list-item&gt;
+        &lt;list-item&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors/4&lt;/list-item&gt;
+    &lt;/authors&gt;
+    &lt;publisher&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers/2&lt;/publisher&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="delete">
+                        <h4>DELETE</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">DELETE</span> on this api to <strong>delete a book with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the book id in the URL of <span class="label label-info">DELETE</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>DELETE http://waisvm-rfp1.ecs.soton.ac.uk/book/260</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Return <code>204 NO CONTENT</code> to indicate this book no longer exists.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/google-code-prettify/run_prettify.js"></script>
+</body>
+
+</html>
