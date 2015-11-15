@@ -1,0 +1,1029 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/navcss.css">
+    <link rel="stylesheet" type="text/css" href="css/mycss.css">
+    <title>ECS Library REST EXT API Doc</title>
+</head>
+
+<body data-spy="scroll" data-target=".sidebar" data-offset="20">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">ECS Library REST EXT API Document</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid" id="content">
+        <!--Nav Bar -->
+        <div id="navigation" class="col-xs-3">
+            <nav class="sidebar">
+                <h4>Ext API Menu</h4>
+                <ul id="sidebar" class="nav nav-stacked fixed">
+                    <li>
+                        <a href="#About">About</a>
+                        <ul class="nav nav-stacked">
+                            <li><a href="#decisions">Design Decisions</a>
+                            </li>
+                            <li><a href="#loan">Loan Properties</a>
+                            </li>
+                            <li><a href="#fine">Fine Properties</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#Loans">Loans</a>
+                        <ul class="nav nav-stacked">
+                            <li><a href="#loans_1">/loans</a>
+                            </li>
+                            <li><a href="#loans_2">/loans/&ltloan_id&gt</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#Fines">Fines</a>
+                        <ul class="nav nav-stacked">
+                            <li><a href="#fines_1">/fines</a>
+                            </li>
+                            <li><a href="#fines_2">/fines/&ltfine_id&gt</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!--Main Content -->
+        <div class="col-xs-9">
+            <section id="About" class="row">
+                <hr>
+                <h2>About</h2>
+
+                <h4>This is the REST Extended API Document of ECS Library.</h4>
+                <br>
+                <p>The extended APIs are designed for loaning books.</p>
+                <div id="decisions">
+                    <h5>Design Decisions:</h5>
+                    <ol>
+                        <li>Four new APIs are added: <code>/loans</code> <code>/loans/&ltloan_id&gt</code> <code>/fines</code> <code>/fines/&ltfine_id&gt</code>.</li>
+                        <li><span class="label label-info">PATCH</span> is used to update while <span class="label label-info">PUT</span> <strong>WON'T</strong> be supported because only part of information need update.</li>
+                        <li><span class="label label-info">DELETE</span> <strong>WON'T</strong> be supported as all loans and fines need to be recorded. Instead, a property
+                            <code>status</code> is used to denote the current status(e.g. status="Returned" denotes the end of a loan).</li>
+                    </ol>
+                </div>
+                <div id="loan">
+                    <h5>Loan Properties</h5>
+                    <table class="table table-condensed table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>url</td>
+                                <td>string</td>
+                                <td>Url of the loan.</td>
+                            </tr>
+                            <tr>
+                                <td>book</td>
+                                <td>string(valid url of book)</td>
+                                <td>Url of the loaned book.</td>
+                            </tr>
+                            <tr>
+                                <td>date_loaned</td>
+                                <td>date</td>
+                                <td>Date when the book was loaned.</td>
+                            </tr>
+                            <tr>
+                                <td>date_due</td>
+                                <td>date</td>
+                                <td>Date by when the book should be returned.</td>
+                            </tr>
+                            <tr>
+                                <td>status</td>
+                                <td>string("Loaned"/"Overdue"/"Returned")</td>
+                                <td>Current status of the loan. </td>
+                            </tr>
+                            <tr>
+                                <td>owner</td>
+                                <td>string</td>
+                                <td>Name of user who own the loan</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="fine">
+                    <h5>Fine Properties</h5>
+                    <table class="table table-condensed table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>url</td>
+                                <td>string</td>
+                                <td>Url of the fine.</td>
+                            </tr>
+                            <tr>
+                                <td>loan</td>
+                                <td>string(valid url of loan)</td>
+                                <td>Url of the corresponding loan.</td>
+                            </tr>
+                            <tr>
+                                <td>date_started</td>
+                                <td>date</td>
+                                <td>Date when the fine was started.</td>
+                            </tr>
+                            <tr>
+                                <td>amount</td>
+                                <td>integer</td>
+                                <td>Fine amount(unit: p).</td>
+                            </tr>
+                            <tr>
+                                <td>status</td>
+                                <td>string("Open"/"Closed")</td>
+                                <td>Current status of the fine.</td>
+                            </tr>
+                            <tr>
+                                <td>owner</td>
+                                <td>string</td>
+                                <td>Name of user who owe the fine</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section id="Loans" class="row">
+                <hr>
+                <h2>Loans</h2>
+                <p>ECS library offers <code>/loans</code> resource for providing the loans list or creating a new loan.</p>
+                <p>Once a new loan is created, <code>/loans/&ltloan_id&gt</code> can be used to get, update the loan.</p>
+                <div id="loans_1">
+                    <hr>
+                    <h3>/loans</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">POST</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get a list of all loans</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Simply <span class="label label-info">GET</span> /loans</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/loans</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="loan" class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns a list of all <a href="#loan">loans</a> and HATEOAS links.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;loans&gt;
+        &lt;list-item&gt;
+            &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/url&gt;
+            &lt;book&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/1&lt;/book&gt;
+            &lt;date_loaned&gt;2015-11-1&lt;/date_loaned&gt;
+            &lt;date_due&gt;2015-11-15&lt;/date_due&gt;
+            &lt;status&gt;Loaned&lt;/status&gt;
+            &lt;owner&gt;cz4n14&lt;/owner&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/2&lt;/url&gt;
+            &lt;book&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/2&lt;/book&gt;
+            &lt;date_loaned&gt;2015-10-30&lt;/date_loaned&gt;
+            &lt;date_due&gt;2015-11-13&lt;/date_due&gt;
+            &lt;status&gt;Overdue&lt;/status&gt;
+            &lt;owner&gt;cz4n14&lt;/owner&gt;
+        &lt;/list-item&gt;
+    &lt;/loans&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans&lt;/href&gt;
+            &lt;rel&gt;create&lt;/rel&gt;
+            &lt;method&gt;POST&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="post">
+                        <h4>POST</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">POST</span> on this api to <strong> loan a book</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p><span class="label label-info">POST</span> with book url in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>book</td>
+                                            <td>url of the book to loan.</td>
+                                            <td>string</td>
+                                            <td>True</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#form-data_1" data-toggle="tab">Form Data</a>
+                                    </li>
+                                    <li><a href="#xml_1" data-toggle="tab">XML</a>
+                                    </li>
+                                    <li><a href="#json_1" data-toggle="tab">JSON</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="form-data_1" class="tab-pane active">
+                                        <table class="table table-condensed table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td>book</td>
+                                                    <td>http://waisvm-rfp1.ecs.soton.ac.uk/books/1</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="xml_1" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;book&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/1&lt;/book&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_1" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "book": "http://waisvm-rfp1.ecs.soton.ac.uk/books/1"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <ul>
+                                    <li>If accepted, return the detail of the <a href="#loan">loan</a> and HATEOAS links.</li>
+                                    <li>If rejected, return the reason(reach the max number or have fine) and HATEOAS links. </li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#accepted" data-toggle="tab">Accepted</a>
+                                    </li>
+                                    <li><a href="#rejected" data-toggle="tab">Rejected</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="accepted" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/url&gt;
+    &lt;book&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/1&lt;/book&gt;
+    &lt;date_loaned&gt;2015-11-1&lt;/date_loaned&gt;
+    &lt;date_due&gt;2015-11-15&lt;/date_due&gt;
+    &lt;status&gt;Loaned&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;POST&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans&lt;/href&gt;
+            &lt;rel&gt;view&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="rejected" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;description&gt;
+        &lt;list-item&gt;Reach max loan number.&lt;/list-item&gt;
+        &lt;list-item&gt;Have outstanding fines.&lt;/list-item&gt;
+    &lt;/description&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans&lt;/href&gt;
+            &lt;rel&gt;loans.view&lt;/ref&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines&lt;/href&gt;
+            &lt;rel&gt;fines.view&lt;/ref&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="loans_2">
+                    <hr>
+                    <h3>/loans/&ltloan_id&gt</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">PATCH</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get the detail of a loan with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the loan id in the URL of <span class="label label-info">GET</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/loans/1</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns detail of the <a href="#loan">loan</a> with the specific id and HATEOAS links.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/url&gt;
+    &lt;book&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/1&lt;/book&gt;
+    &lt;date_loaned&gt;2015-11-1&lt;/date_loaned&gt;
+    &lt;date_due&gt;2015-11-15&lt;/date_due&gt;
+    &lt;status&gt;Loaned&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/href&gt;
+            &lt;rel&gt;update&lt;/rel&gt;
+            &lt;method&gt;PATCH&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="patch">
+                        <h4>PATCH</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PATCH</span> on this api to <strong>renew or return a book</strong>.</p>
+                                <h5>Note:</h5>
+                                <p>The updated due date or status in PATCH parameter should be generated <strong>automatically</strong> by the website(i.e. click renew: due date postpone for 7 days, click return: status change to "Returned".)</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the loan id in the URL of <span class="label label-info">PATCH</span> call with information about the loan in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>date_due</td>
+                                            <td>Due date of book</td>
+                                            <td>date</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>status</td>
+                                            <td>Status of the loan</td>
+                                            <td>string</td>
+                                            <td>False</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#renew" data-toggle="tab">Renew</a>
+                                    </li>
+                                    <li><a href="#return" data-toggle="tab">Return</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="renew" class="tab-pane active">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#xml_3" data-toggle="tab">XML</a>
+                                            </li>
+                                            <li><a href="#json_3" data-toggle="tab">JSON</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="xml_3" class="tab-pane active">
+                                                <pre class="prettyprint">
+&lt;root&gt;
+    &lt;date_due&gt;2015-11-22&lt;/date_due&gt;
+&lt;/root&gt;
+                                        </pre>
+                                            </div>
+                                            <div id="json_3" class="tab-pane">
+                                                <pre class="prettyprint">
+{
+    "date_due": "2015-11-22"
+}
+                                        </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="return" class="tab-pane">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#xml_4" data-toggle="tab">XML</a>
+                                            </li>
+                                            <li><a href="#json_4" data-toggle="tab">JSON</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="xml_4" class="tab-pane active">
+                                                <pre class="prettyprint">
+&lt;root&gt;
+    &lt;status&gt;Returned&lt;/status&gt;
+&lt;/root&gt;
+                                        </pre>
+                                            </div>
+                                            <div id="json_4" class="tab-pane">
+                                                <pre class="prettyprint">
+{
+    "status": "Returned"
+}
+                                        </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated <a href="#loan">loan</a> and HATEOAS links.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#renew_res" data-toggle="tab">Renew</a>
+                                    </li>
+                                    <li><a href="#return_res" data-toggle="tab">Return</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="renew_res" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/url&gt;
+    &lt;book&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/1&lt;/book&gt;
+    &lt;date_loaned&gt;2015-11-1&lt;/date_loaned&gt;
+    &lt;date_due&gt;2015-11-22&lt;/date_due&gt;
+    &lt;status&gt;Loaned&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;PATCH&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/href&gt;
+            &lt;rel&gt;view&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="return_res" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/url&gt;
+    &lt;book&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books/1&lt;/book&gt;
+    &lt;date_loaned&gt;2015-11-1&lt;/date_loaned&gt;
+    &lt;date_due&gt;2015-11-15&lt;/date_due&gt;
+    &lt;status&gt;Returned&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;PATCH&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/href&gt;
+            &lt;rel&gt;view&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="Fines" class="row">
+                <hr>
+                <h2>Fines</h2>
+                <p>ECS library offers <code>/fines</code> resource for providing the fines list or creating a new fine.</p>
+                <p>Once a new fine is created, <code>/fines/&ltfine_id&gt</code> can be used to get, update the fine.</p>
+                <div id="fines_1">
+                    <hr>
+                    <h3>/fines</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">POST</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get a list of all fines</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Simply <span class="label label-info">GET</span> /fines</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/fines</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="fine" class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns a list of all <a href="#fine">fines</a> and HATEOAS links.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;fines&gt;
+        &lt;list-item&gt;
+            &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/url&gt;
+            &lt;loan&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/loan&gt;
+            &lt;amount&gt;20&lt;/amount&gt;
+            &lt;date_started&gt;2015-11-15&lt;/date_started&gt;
+            &lt;status&gt;Open&lt;/status&gt;
+            &lt;owner&gt;cz4n14&lt;/owner&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/2&lt;/url&gt;
+            &lt;loan&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/2&lt;/loan&gt;
+            &lt;amount&gt;40&lt;/amount&gt;
+            &lt;date_started&gt;2015-11-13&lt;/date_started&gt;
+            &lt;status&gt;Open&lt;/status&gt;
+            &lt;owner&gt;cz4n14&lt;/owner&gt;
+        &lt;/list-item&gt;
+    &lt;/loans&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines&lt;/href&gt;
+            &lt;rel&gt;create&lt;/rel&gt;
+            &lt;method&gt;POST&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="post">
+                        <h4>POST</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">POST</span> on this api to <strong> create a fine</strong>.</p>
+                                <h5>Note:</h5>
+                                <p>Fine should be created <strong>automatically</strong> when a loan is overdue.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p><span class="label label-info">POST</span> with loan url in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>loan</td>
+                                            <td>url of the loan overdue.</td>
+                                            <td>string</td>
+                                            <td>True</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#form-data_5" data-toggle="tab">Form Data</a>
+                                    </li>
+                                    <li><a href="#xml_5" data-toggle="tab">XML</a>
+                                    </li>
+                                    <li><a href="#json_5" data-toggle="tab">JSON</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="form-data_5" class="tab-pane active">
+                                        <table class="table table-condensed table-striped table-hover">
+                                            <tbody>
+                                                <tr>
+                                                    <td>loan</td>
+                                                    <td>http://waisvm-rfp1.ecs.soton.ac.uk/loans/1</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="xml_5" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;root&gt;
+    &lt;loan&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/loan&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="json_5" class="tab-pane">
+                                        <pre class="prettyprint">
+{
+    "loan": "http://waisvm-rfp1.ecs.soton.ac.uk/loans/1"
+}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the <a href="#fine">fine</a> and HATEOAS links.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/url&gt;
+    &lt;loan&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/loan&gt;
+    &lt;amount&gt;10&lt;/amount&gt;
+    &lt;date_started&gt;2015-11-15&lt;/date_started&gt;
+    &lt;status&gt;Open&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;POST&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines&lt;/href&gt;
+            &lt;rel&gt;view&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="fines_2">
+                    <hr>
+                    <h3>/fines/&ltfine_id&gt</h3>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    <span class="label label-info">PATCH</span>
+                    </h5>
+                    <hr>
+                    <div class="get">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get the detail of a fine with the specific id</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the fine id in the URL of <span class="label label-info">GET</span> call.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk/fines/1</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns detail of the <a href="#fine">fine</a> with the specific id and HATEOAS links.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/url&gt;
+    &lt;loan&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/loan&gt;
+    &lt;amount&gt;10&lt;/amount&gt;
+    &lt;date_started&gt;2015-11-15&lt;/date_started&gt;
+    &lt;status&gt;Open&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/href&gt;
+            &lt;rel&gt;update&lt;/rel&gt;
+            &lt;method&gt;PATCH&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="patch">
+                        <h4>PATCH</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">PATCH</span> on this api to <strong>add or pay a fine</strong>.</p>
+                                <h5>Note:</h5>
+                                <p>The updated amount and status of fine in PATCH parameter should be generated <strong>automatically</strong> by the website(i.e. everyday when status is "Open": amount add 10, pay fine: status change to "Closed" and amount change to 0.)</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Pass the fine id in the URL of <span class="label label-info">PATCH</span> call with information about the fine in request body.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>amount</td>
+                                            <td>Fine amount</td>
+                                            <td>Integer</td>
+                                            <td>False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>status</td>
+                                            <td>Status of the fine</td>
+                                            <td>string</td>
+                                            <td>False</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request(body)</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#add" data-toggle="tab">Add Fine</a>
+                                    </li>
+                                    <li><a href="#pay" data-toggle="tab">Pay Fine</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="add" class="tab-pane active">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#xml_6" data-toggle="tab">XML</a>
+                                            </li>
+                                            <li><a href="#json_6" data-toggle="tab">JSON</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="xml_6" class="tab-pane active">
+                                                <pre class="prettyprint">
+&lt;root&gt;
+    &lt;amount&gt;20&lt;/amount&gt;
+&lt;/root&gt;
+                                        </pre>
+                                            </div>
+                                            <div id="json_6" class="tab-pane">
+                                                <pre class="prettyprint">
+{
+    "amount": 20
+}
+                                        </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="pay" class="tab-pane">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active"><a href="#xml_7" data-toggle="tab">XML</a>
+                                            </li>
+                                            <li><a href="#json_7" data-toggle="tab">JSON</a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="xml_7" class="tab-pane active">
+                                                <pre class="prettyprint">
+&lt;root&gt;
+    &lt;status&gt;Closed&lt;/status&gt;
+    &lt;amount&gt;0&lt;/amount&gt;
+&lt;/root&gt;
+                                        </pre>
+                                            </div>
+                                            <div id="json_7" class="tab-pane">
+                                                <pre class="prettyprint">
+{
+    "status": "Closed",
+    "amount": 0
+}
+                                        </pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns the detail of the updated <a href="#fine">fine</a> and HATEOAS links.</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#add_res" data-toggle="tab">Add Fine</a>
+                                    </li>
+                                    <li><a href="#pay_res" data-toggle="tab">Pay Fine</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="add_res" class="tab-pane active">
+                                        <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/url&gt;
+    &lt;loan&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/loan&gt;
+    &lt;amount&gt;20&lt;/amount&gt;
+    &lt;date_started&gt;2015-11-15&lt;/date_started&gt;
+    &lt;status&gt;Open&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;PATCH&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/href&gt;
+            &lt;rel&gt;view&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                    <div id="pay_res" class="tab-pane">
+                                        <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;url&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/url&gt;
+    &lt;loan&gt;http://waisvm-rfp1.ecs.soton.ac.uk/loans/1&lt;/loan&gt;
+    &lt;amount&gt;0&lt;/amount&gt;
+    &lt;date_started&gt;2015-11-15&lt;/date_started&gt;
+    &lt;status&gt;Closed&lt;/status&gt;
+    &lt;owner&gt;cz4n14&lt;/owner&gt;
+    &lt;links&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/href&gt;
+            &lt;rel&gt;self&lt;/rel&gt;
+            &lt;method&gt;PATCH&lt;/method&gt;
+        &lt;/list-item&gt;
+        &lt;list-item&gt;
+            &lt;href&gt;http://waisvm-rfp1.ecs.soton.ac.uk/fines/1&lt;/href&gt;
+            &lt;rel&gt;view&lt;/rel&gt;
+            &lt;method&gt;GET&lt;/method&gt;
+        &lt;/list-item&gt;
+    &lt;/links&gt;
+&lt;/root&gt;
+                                        </pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/google-code-prettify/run_prettify.js"></script>
+</body>
+
+</html>

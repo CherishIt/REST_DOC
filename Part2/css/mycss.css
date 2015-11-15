@@ -1,0 +1,38 @@
+/* weird fix for weird issue: scrollspy alway highlight last item */
+html {
+    height: 100%;
+}
+
+.sidebar {
+    padding-top: 70px; /* for the height of the top navbar */
+    position: fixed;
+    padding-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+/* for the height of the top navbar */
+section,
+section>div{
+    padding-top: 60px;
+}
+
+.no-padding-top {
+    padding-top: 0px;
+}
+
+/* customize navbar */
+.navbar {
+    background-color: #1793BD;
+    border-width: 0px;
+    box-shadow: 0px 3px 5px #888888;
+}
+
+/* need very specific selector to win the default */
+.navbar-default .navbar-brand,
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+

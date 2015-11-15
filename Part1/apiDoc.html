@@ -25,6 +25,9 @@
                         <a href="#About">About</a>
                     </li>
                     <li>
+                        <a href="#Root">API Root</a>
+                    </li>
+                    <li>
                         <a href="#Publishers">Publishers</a>
                         <ul class="nav nav-stacked">
                             <li><a href="#publishers_1">/publishers</a>
@@ -116,6 +119,79 @@
 &lt;/root&gt;
                 </pre>
                 </div>
+            </section>
+            <section id="Root" class="row">
+                <hr>
+                <h2>API Root</h2>
+                <p>The API Root of ECS library is <code>http://waisvm-rfp1.ecs.soton.ac.uk/</code></p>
+                <p>This resource contains information about ECS Library</p>
+                    <h5>Supported HTTP Methods: 
+                    <span class="label label-info">GET</span>
+                    </h5>
+                    <hr>
+                    <div class="get no-padding-top">
+                        <h4>GET</h4>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Description:</h5>
+                                <p>Using <span class="label label-info">GET</span> on this api to <strong>get information about ECS Library</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Request:</h5>
+                                <p>Simply <span class="label label-info">GET</span> /</p>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Request</h5>
+                                <pre>GET http://waisvm-rfp1.ecs.soton.ac.uk</pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-5">
+                                <h5>Response:</h5>
+                                <p>Returns basic information about ECS Library.</p>
+                                <table class="table table-condensed table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Property</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>publishers</td>
+                                            <td>Publishers URI</td>
+                                        </tr>
+                                        <tr>
+                                            <td>message</td>
+                                            <td>Message about ECS Library</td>
+                                        </tr>
+                                        <tr>
+                                            <td>books</td>
+                                            <td>Books URI</td>
+                                        </tr>
+                                        <tr>
+                                            <td>authors</td>
+                                            <td>Authors URI</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-7">
+                                <h5>Sample Response</h5>
+                                <pre class="prettyprint">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;root&gt;
+    &lt;publishers&gt;http://waisvm-rfp1.ecs.soton.ac.uk/publishers&lt;/publishers&gt;
+    &lt;message&gt;Welcome to ECS Library REST API. (TODO: write more here)&lt;/message&gt;
+    &lt;books&gt;http://waisvm-rfp1.ecs.soton.ac.uk/books&lt;/books&gt;
+    &lt;authors&gt;http://waisvm-rfp1.ecs.soton.ac.uk/authors&lt;/authors&gt;
+&lt;/root&gt;
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
             </section>
             <section id="Publishers" class="row">
                 <hr>
